@@ -1,46 +1,40 @@
 fun main() {
 
-    data class Pos(val hpos: Int = 0, val depth: Int = 0) {
-        val result: Int
-            get() = this.hpos * this.depth
-    }
-
-    data class Pos2(val hpos: Int = 0, val depth: Int = 0, val aim: Int = 0) {
-        val result: Int
-            get() = this.hpos * this.depth
-    }
-
     fun part1(input: List<String>): Int {
-        var pos = Pos()
-
-        input.forEach {
-            val (cmd, value) = Regex("(\\w+) (\\d+)").find(it)!!.destructured
-            when (cmd) {
-                "up" -> pos = pos.copy(depth = pos.depth - value.toInt())
-                "down" -> pos = pos.copy(depth = pos.depth + value.toInt())
-                "forward" -> pos = pos.copy(hpos = pos.hpos + value.toInt())
-            }
-        }
-
-        return pos.result
-    }
-
-    fun part2(input: List<String>): Int {
-        var pos = Pos2()
+        var depth = 0
+        var hpos = 0
 
         input.forEach {
             val d = Regex("(\\w+) (\\d+)").find(it)!!.destructured
             val cmd = d.component1()
             val value = d.component2().toInt()
             when (cmd) {
-                "up" -> pos = pos.copy(aim = pos.aim - value)
-                "down" -> pos = pos.copy(aim = pos.aim + value)
-                "forward" -> pos =
-                    pos.copy(hpos = pos.hpos + value, depth = pos.depth + pos.aim * value)
+                "up" -> depth -= value
+                "down" -> depth += value
+                "forward" -> hpos += value
             }
         }
 
-        return pos.result
+        return depth * hpos
+    }
+
+    fun part2(input: List<String>): Int {
+        var depth = 0
+        var hpos = 0
+        var aim = 0
+
+        input.forEach {
+            val d = Regex("(\\w+) (\\d+)").find(it)!!.destructured
+            val cmd = d.component1()
+            val value = d.component2().toInt()
+            when (cmd) {
+                "up" -> aim -= value
+                "down" -> aim += value
+                "forward" -> { hpos += value; depth += aim * value }
+            }
+        }
+
+        return depth * hpos
     }
 
     // test if implementation meets criteria from the description, like:
